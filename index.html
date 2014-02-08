@@ -1,0 +1,258 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<html lang="en" xml:lang="en" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta content="text/html; charset=utf-8" http-equiv="Content-Type" />
+    <title>GBM Atlas</title>
+    <link href="css/foundation.css" rel="stylesheet" />
+    <script src="js/vendor/modernizr.js"></script>
+
+    <meta class="foundation-mq-small">
+    <meta class="foundation-mq-medium">
+    <meta class="foundation-mq-large">
+    <meta class="foundation-mq-xlarge">
+    <meta class="foundation-mq-xxlarge">
+    <meta class="foundation-mq-topbar">
+    <meta class="foundation-mq-tabs">
+    <script type="text/javascript">
+    //<![CDATA[
+    function GetXmlHttpObject()
+    {
+      var xmlHttp=null;
+      try
+        {
+        // Firefox, Opera 8.0+, Safari
+        xmlHttp=new XMLHttpRequest();
+        }
+      catch (e)
+        {
+        // Internet Explorer
+        try
+          {
+          xmlHttp=new ActiveXObject("Msxml2.XMLHTTP");
+          }
+        catch (e)
+          {
+          xmlHttp=new ActiveXObject("Microsoft.XMLHTTP");
+          }
+        }
+      return xmlHttp;
+    }
+
+    //Our XmlHttpRequest object to get the auto suggest
+    var xmlHttp = GetXmlHttpObject();
+
+    function callSearch() {
+      $("#groupSelect").html("");
+      $("#results").html("");
+      if (xmlHttp.readyState == 4 || xmlHttp.readyState == 0) {
+        var ss = document.getElementById('results')
+        ss.style.visibility = 'visible';
+        var str1 = escape(document.getElementById('box1').value);
+        var s1 = document.getElementById('r1').checked;
+        var s2 = document.getElementById('r2').checked;
+        if (s2) {
+          ss.innerHTML = 'Not implemented';
+          return;
+        }
+        if (!s1) { str1 = ''; }
+        if ( s1 && (str1 == null || str1 == '')) {
+          ss.innerHTML = 'Name missing';
+          return;
+        }
+        if (s1) {
+          ss.innerHTML ='Please Wait ... <br/><img width=70 src="Images/loading.gif"/>' ;
+          var url = 'gbmatlas.php?go=search&name=' + str1;
+          xmlHttp.open("GET", url, true);
+          xmlHttp.onreadystatechange = handleSearch; 
+          xmlHttp.send(null);
+          return;
+        }
+      }
+    }
+    function handleSearch() {
+      if (xmlHttp.readyState == 4) {
+        var ss = document.getElementById('results')
+        ss.innerHTML = xmlHttp.responseText;
+        ss.style.visibility = 'visible';
+      }
+    }
+    function changeInput(e1) {
+      if (e1 == 1) {
+        $("#boxname").text("Anatomic Level");
+        $("#boxinput").html('\
+    <select id="level" onchange="selectLevel(this.value);"> \
+    <option value="0"> Select an  Anatomic Region Level <\/option> \
+    <option value="1"> Level 1: Hemisphere    <\/option> \
+    <option value="2"> Level 2: Lobe          <\/option> \
+    <option value="3"> Level 3: Gyrus         <\/option> \
+    <option value="4"> Level 4: Tissue Type   <\/option> \
+    <option value="5"> Level 5: Cell Type     <\/option> \
+    <\/select>');
+      }
+      if (e1 == 0) {
+        $("#boxname").text("Enter Gene Name, Gene Symbol, NCBI Accession Number or Entez Gene ID");
+        var bi = document.getElementById('boxinput')
+        var str = '<input type="textbox" id="box1" name="box1" value=""/> \n' +
+        '<input type="button" name="input1" value="search"\n' +
+        'onclick="callSearch();"/> <\/td>\n';
+        bi.innerHTML = str;
+      }
+    }
+    function printTable(names, level) {
+      var str = '<table border=0>\n \
+    <tr> <td> <\/td> <td>Group A<\/td><td>Group B<\/td><\/tr>';
+      for (var i in names) {
+        str += '<tr> <td>' + names[i] + '<\/td>\
+    <td> <input type="checkbox" name="A" value="' + i + '"/> <\/td>\
+    <td> <input type="checkbox" name="B" value="' + i + '"/> <\/td> <\/tr>';
+      }
+      str += '<\/table> \
+    <br/><input type="button" name="input2" value="search" \
+    onclick="callAnatomicSearch(' + level + ');"/>';
+      $("#groupSelect").html(str);
+      $("#results").html("");
+    }
+    function selectLevel(v) {
+      if (v == 1) {
+        var names = ["Left Cerebrum", "Right Cerebrum", "Left Cerebellum",
+            "Right Cerebellum", "Left Brainstem", "Right Brainstem",
+            "Inter-Hemispheric"];
+        printTable(names, v);
+      }
+      if (v == 2) {
+        var names = ["Anterior Lobe", "Frontal Lobe",
+            "Frontal-Temporal Space", "Limbic Lobe", "Medulla",
+            "Midbrain", "Occipital Lobe", "Parietal Lobe",
+            "Pons", "Posterior Lobe", "Sub-lobar", "Temporal Lobe"];
+        printTable(names, v);
+      }
+      if (v == 3) {
+        var names = [ "Angular Gyrus", "Anterior Cingulate", "Caudate",
+            "Cerebellar Lingual", "Cerebellar Tonsil", "Cingulate Gyrus",
+            "Claustrum", "Culmen", "Culmen of Vermis", "Cuneus", "Declive",
+            "Declive of Vermis", "Extra-Nuclear", "Fastigium",
+            "Fourth Ventricle", "Fusiform Gyrus", "Inferior Frontal Gyrus",
+            "Inferior Occipital Gyrus", "Inferior Parietal Lobule",
+            "Inferior Semi-Lunar Lobule", "Inferior Temporal Gyrus",
+            "Insula", "Lateral Ventricle", "Lentiform Nucleus",
+            "Lingual Gyrus", "Medial Frontal Gyrus", "Middle Frontal Gyrus",
+            "Middle Occipital Gyrus", "Middle Temporal Gyrus",
+            "Nodule", "Orbital Gyrus", "Paracentral Lobule",
+            "Parahippocampal Gyrus", "Postcentral Gyrus",
+            "Posterior Cingulate", "Precentral Gyrus", "Precuneus",
+            "Pyramis", "Pyramis of Vermis", "Rectal Gyrus",
+            "Subcallosal Gyrus", "Sub-Gyral", "Superior Frontal Gyrus",
+            "Superior Occipital Gyrus", "Superior Parietal Lobule",
+            "Superior Temporal Gyrus", "Supramarginal Gyrus",
+            "Thalamus", "Third Ventricle", "Transverse Temporal Gyrus",
+            "Tuber", "Tuber of Vermis", "Uncus", "Uvula", "Uvula of Vermis"];
+        printTable(names, v);
+      }
+      if (v == 4) {
+        var names = [ "Cerebro-Spinal Fluid", "Gray Matter", "White Matter"];
+        printTable(names, v);
+      }
+      if (v == 5) {
+        var names = [ "Amygdala", "Anterior Commissure", "Anterior Nucleus",
+            "Brodmann areas", "Caudate Body", "Caudate Head", "Caudate Tail",
+            "Corpus Callosum", "Dentate", "Hippocampus", "Hypothalamus",
+            "Lateral Dorsal Nucleus", "Lateral Geniculum Body",
+            "Lateral Globus Pallidus", "Lateral Posterior Nucleus",
+            "Mammillary Body", "Medial Dorsal Nucleus",
+            "Medial Geniculum Body", "Medial Globus Pallidus",
+            "Midline Nucleus", "Optic Tract", "Pulvinar", "Putamen",
+            "Red Nucleus", "Substania Nigra", "Subthalamic Nucleus",
+            "Ventral Anterior Nucleus", "Ventral Lateral Nucleus",
+            "Ventral Posterior Lateral Nucleus",
+            "Ventral Posterior Medial Nucleus" ];
+        printTable(names, v);
+      }
+    }
+    function callAnatomicSearch(v) {
+      $("#results").html('Please Wait ... <br/><img width=70 src="Images/loading.gif"/>');
+      var groupA = [];
+      $("#groupSelect").find("input[type=checkbox][name=A]").each(function(){
+        if (this.checked) { groupA.push($(this).attr("value"));}});
+      var groupB = [];
+      $("#groupSelect").find("input[type=checkbox][name=B]").each(function(){
+        if (this.checked) { groupB.push($(this).attr("value"));}});
+      $.get("gbmatlas.php", { level: v,
+        A: groupA.join(":"), B: groupB.join(":"), go: "asearch" }).done(
+        function(data) { $("#results").html(data); });
+    }
+    //]]>
+    </script>
+</head>
+
+<body>
+    <div class="inner-wrap">
+        <nav class="top-bar" data-topbar="">
+            <ul class="title-area">
+                <li class="name">
+                    <h1><a href="index.html">GBM Atlas</a></h1>
+                </li>
+            </ul>
+
+            <section class="top-bar-section">
+                <ul class="left">
+                    <li class="divider"></li>
+                    <li id = "stop1" class="active"><a href="index.html">Gene Search</a></li>
+                    <li class="divider"></li>
+                    <li id = "stop2" 
+                    class="active" ><a href="aSearch.html">Anatomic Search</a></li>
+                    <li class="divider"></li>
+                </ul>
+                <ul class="right">
+                    <li class="divider"></li>
+                    <li class="active"><a href="ref.html">Publications</a></li>
+                    <li class="divider"></li>
+                    <li class="active"><a href="contact.html">Contact
+                    Us</a></li>
+                </ul>
+            </section>
+        </nav>
+    </div>
+
+    <div class="row">
+      <div class="large-12 columns">
+        <hr>
+        <p>To perform a search based on genes, please enter a gene below. </p>
+        <form>
+          <div class="row collapse">
+            <div class="large-10 columns">
+              <input type="text" placeholder="Gene name, symbol, NCBI accession number or Entrez Gene ID:" />
+            </div>
+            <div class="large-2 columns">
+              <onClick="callSearch();" class="button postfix">Go</a>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+    <ol class="joyride-list" data-joyride>
+      <li data-id="stop1" data-button="Next">
+        <p>Hello and welcome to the GBM atlas. A resource for glioblastoma multiforme compiled from the TCGA cohort.</p>
+      </li>
+      <li data-id="stop1" data-button="Next" data-options="tip_location:top;">
+        <h4>Gene Search</h4>
+        <p>Click here to perform a search based on genes.</p>
+      </li>
+      <li data-id="stop2" data-button="End" data-options="tip_location:top;">
+        <h4>Localization Search</h4>
+        <p>Click here to perform a search based on anatomic locations.</p>
+      </li>
+    </ol>
+    <script src="js/vendor/jquery.js"></script>
+    <script src="js/foundation/foundation.js"></script>
+    <script src="js/vendor/fastclick.js"></script>
+    <script src="js/foundation.min.js"></script>
+    <script src="js/foundation/foundation.joyride.js"></script>
+    <script src="js/vendor/jquery.cookie.js"></script> 
+
+    <script>
+      $(document).foundation('joyride', 'start');
+     $(document).foundation();
+    </script>
+</body>
+</html>
