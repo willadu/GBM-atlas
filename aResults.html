@@ -78,6 +78,98 @@
         ss.style.visibility = 'visible';
       }
     }
+    function changeInput(e1) {
+      if (e1 == 1) {
+        $("#boxname").text("Anatomic Level");
+        $("#boxinput").html('\
+    <select id="level" onchange="selectLevel(this.value);"> \
+    <option value="0"> Select an  Anatomic Region Level <\/option> \
+    <option value="1"> Level 1: Hemisphere    <\/option> \
+    <option value="2"> Level 2: Lobe          <\/option> \
+    <option value="3"> Level 3: Gyrus         <\/option> \
+    <option value="4"> Level 4: Tissue Type   <\/option> \
+    <option value="5"> Level 5: Cell Type     <\/option> \
+    <\/select>');
+      }
+      if (e1 == 0) {
+        $("#boxname").text("Enter Gene Name, Gene Symbol, NCBI Accession Number or Entez Gene ID");
+        var bi = document.getElementById('boxinput')
+        var str = '<input type="textbox" id="box1" name="box1" value=""/> \n' +
+        '<input type="button" name="input1" value="search"\n' +
+        'onclick="callSearch();"/> <\/td>\n';
+        bi.innerHTML = str;
+      }
+    }
+    function printTable(names, level) {
+      var str = '<table border=0>\n \
+    <tr> <td> <\/td> <td>Group A<\/td><td>Group B<\/td><\/tr>';
+      for (var i in names) {
+        str += '<tr> <td>' + names[i] + '<\/td>\
+    <td> <input type="checkbox" name="A" value="' + i + '"/> <\/td>\
+    <td> <input type="checkbox" name="B" value="' + i + '"/> <\/td> <\/tr>';
+      }
+      str += '<\/table> \
+    <br/><input type="button" name="input2" value="search" \
+    onclick="callAnatomicSearch(' + level + ');"/>';
+      $("#groupSelect").html(str);
+      $("#results").html("");
+    }
+    function selectLevel(v) {
+      if (v == 1) {
+        var names = ["Left Cerebrum", "Right Cerebrum", "Left Cerebellum",
+            "Right Cerebellum", "Left Brainstem", "Right Brainstem",
+            "Inter-Hemispheric"];
+        printTable(names, v);
+      }
+      if (v == 2) {
+        var names = ["Anterior Lobe", "Frontal Lobe",
+            "Frontal-Temporal Space", "Limbic Lobe", "Medulla",
+            "Midbrain", "Occipital Lobe", "Parietal Lobe",
+            "Pons", "Posterior Lobe", "Sub-lobar", "Temporal Lobe"];
+        printTable(names, v);
+      }
+      if (v == 3) {
+        var names = [ "Angular Gyrus", "Anterior Cingulate", "Caudate",
+            "Cerebellar Lingual", "Cerebellar Tonsil", "Cingulate Gyrus",
+            "Claustrum", "Culmen", "Culmen of Vermis", "Cuneus", "Declive",
+            "Declive of Vermis", "Extra-Nuclear", "Fastigium",
+            "Fourth Ventricle", "Fusiform Gyrus", "Inferior Frontal Gyrus",
+            "Inferior Occipital Gyrus", "Inferior Parietal Lobule",
+            "Inferior Semi-Lunar Lobule", "Inferior Temporal Gyrus",
+            "Insula", "Lateral Ventricle", "Lentiform Nucleus",
+            "Lingual Gyrus", "Medial Frontal Gyrus", "Middle Frontal Gyrus",
+            "Middle Occipital Gyrus", "Middle Temporal Gyrus",
+            "Nodule", "Orbital Gyrus", "Paracentral Lobule",
+            "Parahippocampal Gyrus", "Postcentral Gyrus",
+            "Posterior Cingulate", "Precentral Gyrus", "Precuneus",
+            "Pyramis", "Pyramis of Vermis", "Rectal Gyrus",
+            "Subcallosal Gyrus", "Sub-Gyral", "Superior Frontal Gyrus",
+            "Superior Occipital Gyrus", "Superior Parietal Lobule",
+            "Superior Temporal Gyrus", "Supramarginal Gyrus",
+            "Thalamus", "Third Ventricle", "Transverse Temporal Gyrus",
+            "Tuber", "Tuber of Vermis", "Uncus", "Uvula", "Uvula of Vermis"];
+        printTable(names, v);
+      }
+      if (v == 4) {
+        var names = [ "Cerebro-Spinal Fluid", "Gray Matter", "White Matter"];
+        printTable(names, v);
+      }
+      if (v == 5) {
+        var names = [ "Amygdala", "Anterior Commissure", "Anterior Nucleus",
+            "Brodmann areas", "Caudate Body", "Caudate Head", "Caudate Tail",
+            "Corpus Callosum", "Dentate", "Hippocampus", "Hypothalamus",
+            "Lateral Dorsal Nucleus", "Lateral Geniculum Body",
+            "Lateral Globus Pallidus", "Lateral Posterior Nucleus",
+            "Mammillary Body", "Medial Dorsal Nucleus",
+            "Medial Geniculum Body", "Medial Globus Pallidus",
+            "Midline Nucleus", "Optic Tract", "Pulvinar", "Putamen",
+            "Red Nucleus", "Substania Nigra", "Subthalamic Nucleus",
+            "Ventral Anterior Nucleus", "Ventral Lateral Nucleus",
+            "Ventral Posterior Lateral Nucleus",
+            "Ventral Posterior Medial Nucleus" ];
+        printTable(names, v);
+      }
+    }
     function callAnatomicSearch(v) {
       $("#results").html('Please Wait ... <br/><img width=70 src="Images/loading.gif"/>');
       var groupA = [];
@@ -121,8 +213,9 @@
             </section>
         </nav>
     </div>
-    
-    <div class="row">
+
+     <div class="row">
+        <div class="large-12 columns"><br></div>
         <div class="large-5 columns">
           <h5>Group A</h5>
           <select data-placeholder="Choose labels..." class="chosen-select" multiple tabindex="6">
@@ -375,13 +468,78 @@
           <onClick="callSearch();" class="button postfix">Go</a>
         </div>
       </div>
-    
+    <hr>
+    <div class ="row">
+      <div class = "large-12columns">
+        <h3>Up in Group A</h3>
+        <table>
+          <thead>
+            <tr>
+              <th width="200">Table Header</th>
+              <th>Table Header</th>
+              <th width="150">Table Header</th>
+              <th width="150">Table Header</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Content Goes Here</td>
+              <td>This is longer content Donec id elit non mi porta gravida at eget metus.</td>
+              <td>Content Goes Here</td>
+              <td>Content Goes Here</td>
+            </tr>
+            <tr>
+              <td>Content Goes Here</td>
+              <td>This is longer Content Goes Here Donec id elit non mi porta gravida at eget metus.</td>
+              <td>Content Goes Here</td>
+              <td>Content Goes Here</td>
+            </tr>
+            <tr>
+              <td>Content Goes Here</td>
+              <td>This is longer Content Goes Here Donec id elit non mi porta gravida at eget metus.</td>
+              <td>Content Goes Here</td>
+              <td>Content Goes Here</td>
+            </tr>
+          </tbody>
+        </table>
+        <hr>
+        <h3>Down in Group A</h3>
+        <table>
+          <thead>
+            <tr>
+              <th width="200">Table Header</th>
+              <th>Table Header</th>
+              <th width="150">Table Header</th>
+              <th width="150">Table Header</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Content Goes Here</td>
+              <td>This is longer content Donec id elit non mi porta gravida at eget metus.</td>
+              <td>Content Goes Here</td>
+              <td>Content Goes Here</td>
+            </tr>
+            <tr>
+              <td>Content Goes Here</td>
+              <td>This is longer Content Goes Here Donec id elit non mi porta gravida at eget metus.</td>
+              <td>Content Goes Here</td>
+              <td>Content Goes Here</td>
+            </tr>
+            <tr>
+              <td>Content Goes Here</td>
+              <td>This is longer Content Goes Here Donec id elit non mi porta gravida at eget metus.</td>
+              <td>Content Goes Here</td>
+              <td>Content Goes Here</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
     <script src="js/vendor/jquery.js"></script>
     <script src="js/vendor/fastclick.js"></script>
     <script src="js/foundation.min.js"></script>
-    <script src="chosen_v1/chosen.jquery.js"></script>
-    <script src="chosen_v1/chosen-dojo.js"></script>    
-
+    <script src="chosen_v1/chosen.jquery.js" type="text/javascript"></script>
     <script type="text/javascript">
       var config = {
         '.chosen-select'           : {},
@@ -397,6 +555,9 @@
     <script>
      $(document).foundation();
     </script>
+
+    
+  
             
 </body>
 </html>
